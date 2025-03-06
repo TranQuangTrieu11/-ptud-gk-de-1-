@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Tài khoản bị khóa{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="blocked-message">
+        <div class="blocked-icon">
+            <i class="fa fa-lock"></i>
+        </div>
+        <h1>Tài khoản của bạn đã bị khóa</h1>
+        <p>Tài khoản của bạn đã bị quản trị viên khóa và không thể truy cập vào hệ thống.</p>
+        <p>Vui lòng liên hệ với quản trị viên để biết thêm thông tin và yêu cầu mở khóa tài khoản.</p>
+        <div class="action-links">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Quay lại trang chủ</a>
+            <a href="mailto:admin@example.com" class="btn btn-outline">Liên hệ Admin</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

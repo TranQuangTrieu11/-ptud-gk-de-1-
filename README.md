@@ -29,7 +29,7 @@ flask-blog
 1. Clone the repository:
    ```
    git clone <repository-url>
-   cd flask-blog
+   cd flask-tiny-app
    ```
 
 2. Install the required dependencies:
@@ -45,6 +45,15 @@ flask-blog
    ```
 
 2. Open your web browser and go to `http://127.0.0.1:5000` to access the blog.
+
+## Admin Access
+
+1. Đăng nhập với tài khoản admin mặc định:
+   - Username: admin
+   - Password: admin123
+
+2. Sau khi đăng nhập, bạn sẽ thấy liên kết "Admin Panel" trong thanh điều hướng
+3. Hoặc truy cập trực tiếp: http://127.0.0.1:5000/admin
 
 ## Features
 
