@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Debug{% endblock %}
+{% block title %}Debug Info{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1>Debug Information</h1>
-    <pre>{{ user_info }}</pre>
+    <h1>User Information Debug</h1>
+    <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
+        {{ user_info | pprint }}
+    </pre>
 </div>
 {% endblock %}

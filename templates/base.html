@@ -13,15 +13,16 @@
         <h1>Welcome to My Blog</h1>
         <nav>
             <ul>
-                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('index') }}">Trang chủ</a></li>
                 {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('my_posts') }}">Bài viết của tôi</a></li>
                     {% if current_user.is_admin %}
-                        <li><a href="{{ url_for('admin_dashboard') }}">Admin Panel</a></li>
+                        <li><a href="{{ url_for('admin_dashboard') }}">Quản trị</a></li>
                     {% endif %}
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('logout') }}">Đăng xuất</a></li>
                 {% else %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    <li><a href="{{ url_for('login') }}">Đăng nhập</a></li>
+                    <li><a href="{{ url_for('register') }}">Đăng ký</a></li>
                 {% endif %}
             </ul>
         </nav>

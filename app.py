@@ -196,8 +196,121 @@ def debug():
     
     return render_template('debug.html', user_info=user_info)
 
+@app.route('/my-posts')
+@login_required
+def my_posts():
+    posts = Post.query.filter_by(user_id=current_user.id).order_by(Post.date_posted.desc()).all()
+    return render_template('my_posts.html', posts=posts)
+
+@app.route('/post/new', methods=['GET', 'POST'])
+@login_required
+def new_post():
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        
+        if not title or not content:
+            flash('Tiêu đề và nội dung không được để trống!', 'danger')
+            return render_template('new_post.html')
+        
+        post = Post(title=title, content=content, author=current_user)
+        
+        db.session.add(post)
+        db.session.commit()
+        
+        flash('Bài viết của bạn đã được đăng thành công!', 'success')
+        return redirect(url_for('my_posts'))
+    
+    return render_template('new_post.html')
+
+@app.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    
+    # Kiểm tra quyền
+    if post.user_id != current_user.id and not current_user.is_admin:
+        flash('Bạn không có quyền sửa bài viết này!', 'danger')
+        return redirect(url_for('post', post_id=post.id))
+    
+    if request.method == 'POST':
+        post.title = request.form['title']
+        post.content = request.form['content']
+        db.session.commit()
+        
+        flash('Bài viết đã được cập nhật thành công!', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    
+    return render_template('edit_post.html', post=post)
+
+@app.route('/post/<int:post_id>/delete')
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    
+    # Kiểm tra quyền
+    if post.user_id != current_user.id and not current_user.is_admin:
+        flash('Bạn không có quyền xóa bài viết này!', 'danger')
+        return redirect(url_for('post', post_id=post.id))
+    
+    db.session.delete(post)
+    db.session.commit()
+    
+    flash('Bài viết đã được xóa!', 'success')
+    return redirect(url_for('my_posts'))
+
+@app.route('/user-info')
+def user_info():
+    data = {
+        'is_authenticated': current_user.is_authenticated,
+        'anonymous': current_user.is_anonymous
+    }
+    
+    if current_user.is_authenticated:
+        data.update({
+            'id': current_user.id,
+            'username': current_user.username,
+            'is_admin': current_user.is_admin
+        })
+    
+    return render_template('debug.html', user_info=data)
+
+@app.route('/post/<int:post_id>/comment', methods=['POST'])
+@login_required
+def add_comment(post_id):
+    post = Post.query.get_or_404(post_id)
+    
+    if request.method == 'POST':
+        content = request.form['content']
+        
+        if not content:
+            flash('Nội dung bình luận không được để trống!', 'danger')
+            return redirect(url_for('post', post_id=post_id))
+        
+        # Thêm check để đảm bảo người dùng không bị khóa
+        if current_user.is_blocked:
+            flash('Tài khoản của bạn đã bị khóa và không thể bình luận.', 'danger')
+            return redirect(url_for('blocked'))
+            
+        from models import Comment
+        
+        comment = Comment(
+            content=content,
+            user_id=current_user.id,
+            post_id=post_id
+        )
+        
+        db.session.add(comment)
+        db.session.commit()
+        
+        flash('Bình luận của bạn đã được đăng thành công!', 'success')
+    
+    return redirect(url_for('post', post_id=post_id))
+
 if __name__ == '__main__':
     with app.app_context():
+        # Import models để migration database
+        from models import User, Post, Comment
         db.create_all()
         # Tạo tài khoản admin mặc định nếu chưa có
         admin = User.query.filter_by(username='admin').first()

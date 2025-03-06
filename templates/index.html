@@ -1,37 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Blog</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <header>
-        <h1>Welcome to My Blog</h1>
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('login') }}">Login</a></li>
-                <li><a href="{{ url_for('register') }}">Register</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section>
-            <h2>Latest Posts</h2>
-            <ul>
-                {% for post in posts %}
-                    <li>
-                        <a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
-                        <p>{{ post.content[:100] }}...</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; {{ year }} My Blog. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}My Blog - Home{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section>
+        <h2>Latest Posts</h2>
+        <ul class="posts-list">
+            {% for post in posts %}
+                <li class="post">
+                    <h3><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h3>
+                    <div class="post-meta">
+                        <span class="post-author">Tác giả: {{ post.author.username }}</span>
+                        <span class="post-date">Đăng ngày: {{ post.date_posted.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                    <div class="post-excerpt">
+                        <p>{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
+                    </div>
+                    <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-sm">Đọc tiếp</a>
+                </li>
+            {% else %}
+                <li class="no-posts">
+                    <p>Chưa có bài viết nào.</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock %}
