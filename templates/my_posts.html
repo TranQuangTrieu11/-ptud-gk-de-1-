@@ -23,21 +23,35 @@
     </div>
     
     {% if posts %}
-        <div class="posts-grid">
-            {% for post in posts %}
-            <div class="post-card">
-                <h2 class="post-title">{{ post.title }}</h2>
-                <p class="post-date">Đăng ngày {{ post.date_posted.strftime('%d/%m/%Y') }}</p>
-                <p class="post-excerpt">{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
-                <div class="post-actions">
-                    <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-sm">Xem</a>
-                    <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-sm btn-warning">Sửa</a>
-                    <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-sm btn-danger" 
-                       onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">Xóa</a>
+        <form action="{{ url_for('bulk_delete_posts') }}" method="POST" id="bulk-delete-form">
+            <div class="bulk-actions">
+                <div class="select-all-wrapper">
+                    <label><input type="checkbox" id="select-all"> Chọn tất cả</label>
                 </div>
+                <button type="submit" class="btn btn-danger bulk-delete-btn" disabled>
+                    <i class="fas fa-trash-alt"></i> Xóa đã chọn (<span id="selected-count">0</span>)
+                </button>
             </div>
-            {% endfor %}
-        </div>
+            
+            <div class="posts-grid">
+                {% for post in posts %}
+                <div class="post-card">
+                    <div class="post-selector">
+                        <input type="checkbox" name="post_ids" value="{{ post.id }}" class="post-checkbox">
+                    </div>
+                    <h2 class="post-title">{{ post.title }}</h2>
+                    <p class="post-date">Đăng ngày {{ post.date_posted.strftime('%d/%m/%Y') }}</p>
+                    <p class="post-excerpt">{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
+                    <div class="post-actions">
+                        <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-sm">Xem</a>
+                        <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                        <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-sm btn-danger" 
+                        onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">Xóa</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </form>
     {% else %}
         <div class="no-posts">
             <p>Bạn chưa có bài viết nào.</p>
@@ -45,4 +59,65 @@
         </div>
     {% endif %}
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('select-all');
+    const postCheckboxes = document.querySelectorAll('.post-checkbox');
+    const bulkDeleteBtn = document.querySelector('.bulk-delete-btn');
+    const selectedCountEl = document.getElementById('selected-count');
+    const bulkDeleteForm = document.getElementById('bulk-delete-form');
+    
+    function updateButtonState() {
+        const checkedCount = document.querySelectorAll('.post-checkbox:checked').length;
+        selectedCountEl.textContent = checkedCount;
+        bulkDeleteBtn.disabled = checkedCount === 0;
+        
+        // Thêm/xóa class cho post-card khi được chọn
+        postCheckboxes.forEach(checkbox => {
+            const postCard = checkbox.closest('.post-card');
+            if (checkbox.checked) {
+                postCard.classList.add('selected');
+            } else {
+                postCard.classList.remove('selected');
+            }
+        });
+    }
+    
+    // Xử lý khi checkbox "Chọn tất cả" thay đổi
+    selectAllCheckbox.addEventListener('change', function() {
+        postCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateButtonState();
+    });
+    
+    // Xử lý khi các checkbox bài viết thay đổi
+    postCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            // Kiểm tra nếu tất cả đều được chọn thì select-all cũng phải được chọn
+            selectAllCheckbox.checked = postCheckboxes.length === 
+                document.querySelectorAll('.post-checkbox:checked').length;
+            
+            updateButtonState();
+        });
+    });
+    
+    // Xác nhận trước khi xóa hàng loạt
+    bulkDeleteForm.addEventListener('submit', function(e) {
+        const checkedCount = document.querySelectorAll('.post-checkbox:checked').length;
+        if (checkedCount === 0) {
+            e.preventDefault();
+            return;
+        }
+        
+        if (!confirm(`Bạn có chắc chắn muốn xóa ${checkedCount} bài viết đã chọn?`)) {
+            e.preventDefault();
+        }
+    });
+    
+    // Khởi tạo trạng thái nút ban đầu
+    updateButtonState();
+});
+</script>
 {% endblock %}

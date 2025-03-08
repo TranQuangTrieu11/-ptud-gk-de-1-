@@ -307,6 +307,38 @@ def add_comment(post_id):
     
     return redirect(url_for('post', post_id=post_id))
 
+@app.route('/bulk-delete-posts', methods=['POST'])
+@login_required
+def bulk_delete_posts():
+    post_ids = request.form.getlist('post_ids')
+    
+    if not post_ids:
+        flash('Không có bài viết nào được chọn để xóa.', 'warning')
+        return redirect(url_for('my_posts'))
+    
+    deleted_count = 0
+    unauthorized_count = 0
+    
+    for post_id in post_ids:
+        post = Post.query.get(post_id)
+        
+        if post:
+            # Kiểm tra quyền xóa (chỉ owner hoặc admin)
+            if post.user_id == current_user.id or current_user.is_admin:
+                db.session.delete(post)
+                deleted_count += 1
+            else:
+                unauthorized_count += 1
+                
+    if unauthorized_count > 0:
+        flash(f'Có {unauthorized_count} bài viết bạn không có quyền xóa.', 'warning')
+    
+    if deleted_count > 0:
+        db.session.commit()
+        flash(f'Đã xóa thành công {deleted_count} bài viết.', 'success')
+    
+    return redirect(url_for('my_posts'))
+
 if __name__ == '__main__':
     with app.app_context():
         # Import models để migration database
