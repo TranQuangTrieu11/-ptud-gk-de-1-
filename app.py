@@ -26,10 +26,6 @@ def check_blocked_user():
         logout_user()
         return redirect(url_for('blocked'))
 
-@app.route('/')
-def index():
-    posts = Post.query.order_by(Post.date_posted.desc()).all()
-    return render_template('index.html', posts=posts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -196,11 +192,6 @@ def debug():
     
     return render_template('debug.html', user_info=user_info)
 
-@app.route('/my-posts')
-@login_required
-def my_posts():
-    posts = Post.query.filter_by(user_id=current_user.id).order_by(Post.date_posted.desc()).all()
-    return render_template('my_posts.html', posts=posts)
 
 @app.route('/post/new', methods=['GET', 'POST'])
 @login_required
@@ -338,6 +329,21 @@ def bulk_delete_posts():
         flash(f'Đã xóa thành công {deleted_count} bài viết.', 'success')
     
     return redirect(url_for('my_posts'))
+
+@app.route('/', defaults={'page': 1})
+@app.route('/page/<int:page>')
+def index(page):
+    per_page = 5
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    return render_template('index.html', posts=posts)
+
+@app.route('/my-posts', defaults={'page': 1})
+@app.route('/my-posts/page/<int:page>')
+@login_required
+def my_posts(page):
+    per_page = 5
+    posts = Post.query.filter_by(user_id=current_user.id).order_by(Post.date_posted.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    return render_template('my_posts.html', posts=posts)
 
 if __name__ == '__main__':
     with app.app_context():

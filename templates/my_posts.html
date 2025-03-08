@@ -22,7 +22,7 @@
         </a>
     </div>
     
-    {% if posts %}
+    {% if posts.total > 0 %}
         <form action="{{ url_for('bulk_delete_posts') }}" method="POST" id="bulk-delete-form">
             <div class="bulk-actions">
                 <div class="select-all-wrapper">
@@ -34,7 +34,7 @@
             </div>
             
             <div class="posts-grid">
-                {% for post in posts %}
+                {% for post in posts.items %}
                 <div class="post-card">
                     <div class="post-selector">
                         <input type="checkbox" name="post_ids" value="{{ post.id }}" class="post-checkbox">
@@ -50,6 +50,38 @@
                     </div>
                 </div>
                 {% endfor %}
+            </div>
+            
+            <!-- Phân trang -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    Hiển thị {{ posts.items|length }} / {{ posts.total }} bài viết
+                </div>
+                <div class="pagination-links">
+                    {% if posts.has_prev %}
+                        <a href="{{ url_for('my_posts', page=posts.prev_num) }}" class="pagination-link">&laquo; Trước</a>
+                    {% else %}
+                        <span class="pagination-link disabled">&laquo; Trước</span>
+                    {% endif %}
+                    
+                    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                            {% if page_num == posts.page %}
+                                <span class="pagination-link active">{{ page_num }}</span>
+                            {% else %}
+                                <a href="{{ url_for('my_posts', page=page_num) }}" class="pagination-link">{{ page_num }}</a>
+                            {% endif %}
+                        {% else %}
+                            <span class="pagination-link dots">...</span>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if posts.has_next %}
+                        <a href="{{ url_for('my_posts', page=posts.next_num) }}" class="pagination-link">Sau &raquo;</a>
+                    {% else %}
+                        <span class="pagination-link disabled">Sau &raquo;</span>
+                    {% endif %}
+                </div>
             </div>
         </form>
     {% else %}
@@ -85,39 +117,47 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Xử lý khi checkbox "Chọn tất cả" thay đổi
-    selectAllCheckbox.addEventListener('change', function() {
-        postCheckboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            postCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateButtonState();
         });
-        updateButtonState();
-    });
+    }
     
     // Xử lý khi các checkbox bài viết thay đổi
     postCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             // Kiểm tra nếu tất cả đều được chọn thì select-all cũng phải được chọn
-            selectAllCheckbox.checked = postCheckboxes.length === 
-                document.querySelectorAll('.post-checkbox:checked').length;
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = postCheckboxes.length === 
+                    document.querySelectorAll('.post-checkbox:checked').length;
+            }
             
             updateButtonState();
         });
     });
     
     // Xác nhận trước khi xóa hàng loạt
-    bulkDeleteForm.addEventListener('submit', function(e) {
-        const checkedCount = document.querySelectorAll('.post-checkbox:checked').length;
-        if (checkedCount === 0) {
-            e.preventDefault();
-            return;
-        }
-        
-        if (!confirm(`Bạn có chắc chắn muốn xóa ${checkedCount} bài viết đã chọn?`)) {
-            e.preventDefault();
-        }
-    });
+    if (bulkDeleteForm) {
+        bulkDeleteForm.addEventListener('submit', function(e) {
+            const checkedCount = document.querySelectorAll('.post-checkbox:checked').length;
+            if (checkedCount === 0) {
+                e.preventDefault();
+                return;
+            }
+            
+            if (!confirm(`Bạn có chắc chắn muốn xóa ${checkedCount} bài viết đã chọn?`)) {
+                e.preventDefault();
+            }
+        });
+    }
     
     // Khởi tạo trạng thái nút ban đầu
-    updateButtonState();
+    if (postCheckboxes.length > 0) {
+        updateButtonState();
+    }
 });
 </script>
 {% endblock %}

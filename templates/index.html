@@ -5,9 +5,9 @@
 {% block content %}
 <div class="container">
     <section>
-        <h2>Latest Posts</h2>
+        <h2>Bài viết mới nhất</h2>
         <ul class="posts-list">
-            {% for post in posts %}
+            {% for post in posts.items %}
                 <li class="post">
                     <h3><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h3>
                     <div class="post-meta">
@@ -25,6 +25,40 @@
                 </li>
             {% endfor %}
         </ul>
+        
+        <!-- Phân trang -->
+        {% if posts.total > 0 %}
+        <div class="pagination">
+            <div class="pagination-info">
+                Hiển thị {{ posts.items|length }} / {{ posts.total }} bài viết
+            </div>
+            <div class="pagination-links">
+                {% if posts.has_prev %}
+                    <a href="{{ url_for('index', page=posts.prev_num) }}" class="pagination-link">&laquo; Trước</a>
+                {% else %}
+                    <span class="pagination-link disabled">&laquo; Trước</span>
+                {% endif %}
+                
+                {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == posts.page %}
+                            <span class="pagination-link active">{{ page_num }}</span>
+                        {% else %}
+                            <a href="{{ url_for('index', page=page_num) }}" class="pagination-link">{{ page_num }}</a>
+                        {% endif %}
+                    {% else %}
+                        <span class="pagination-link dots">...</span>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if posts.has_next %}
+                    <a href="{{ url_for('index', page=posts.next_num) }}" class="pagination-link">Sau &raquo;</a>
+                {% else %}
+                    <span class="pagination-link disabled">Sau &raquo;</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
     </section>
 </div>
 {% endblock %}
