@@ -1,67 +1,62 @@
 # Flask Blog
 
-Đây là một ứng dụng blog web đơn giản được xây dựng bằng Flask. Nó cho phép người dùng đăng ký, đăng nhập, tạo và xem các bài đăng trên blog.
+## Thông tin cá nhân
+- **Họ tên:** Lê Nhật Trường 
+- **Mã sinh viên:** 22716321
 
-## Project Structure
+- **Họ tên:** Nguyễn Văn Tùng 
+- **Mã sinh viên:** 22647011
 
-```
-flask-blog
-├── app.py               # Main entry point of the application
-├── config.py            # Configuration settings
-├── models.py            # Data models for the application
-├── requirements.txt     # Project dependencies
-├── static               # Static files (CSS, JS)
-│   ├── css
-│   │   └── style.css    # Styles for the application
-│   └── js
-│       └── main.js      # JavaScript for client-side functionality
-├── templates            # HTML templates
-│   ├── base.html        # Base template
-│   ├── index.html       # Homepage
-│   ├── login.html       # Login form
-│   ├── post.html        # Single blog post
-│   └── register.html    # Registration form
-└── README.md            # Project documentation
-```
+## Mô tả project
+Flask Blog là một ứng dụng blog hoàn chỉnh được xây dựng bằng Python với framework Flask. Dự án này được phát triển nhằm mục đích tạo ra một nền tảng blog đơn giản nhưng đầy đủ tính năng, nơi người dùng có thể đăng ký, đăng nhập, tạo và quản lý các bài viết của mình.
 
-## Installation
+### Các tính năng chính:
+1. **Hệ thống người dùng**
+   - Đăng ký và đăng nhập tài khoản
+   - Phân quyền Admin/User
+   - Admin có thể khóa tài khoản và đặt lại mật khẩu của người dùng
+
+2. **Quản lý bài viết**
+   - Tạo, đọc, cập nhật, xóa bài viết
+   - Hỗ trợ xóa hàng loạt bài viết
+   - Phân trang hiển thị bài viết (5 bài/trang)
+
+3. **Tương tác**
+   - Hệ thống bình luận trên bài viết
+   - Giao diện thân thiện người dùng
+
+## Hướng dẫn cài đặt
 
 1. Clone the repository:
    ```
-   git clone <repository-url>
+   git clone https://github.com/LeNhatTruong0909/flask-tiny-app.git
    cd flask-tiny-app
    ```
-
 2. Install the required dependencies:
    ```
    pip install -r requirements.txt
    ```
 
-## Usage
-
-1. Run the application:
+3. Run the application:
    ```
    python app.py
    ```
 
-2. Open your web browser and go to `http://127.0.0.1:5000` to access the blog.
+4. Open your web browser and go to `http://127.0.0.1:5000` to access the blog.
 
-## Admin Access
+## Tài khoản mặc định
 
-1. Đăng nhập với tài khoản admin mặc định:
-   - Username: admin
-   - Password: admin123
+- **Admin:**
+  - Username: admin
+  - Password: admin123
 
-2. Sau khi đăng nhập, bạn sẽ thấy liên kết "Admin Panel" trong thanh điều hướng
-3. Hoặc truy cập trực tiếp: http://127.0.0.1:5000/admin
+## Quá trình phát triển
+Ứng dụng đã trải qua 5 phiên bản phát triển:
+- V1: Khởi tạo dự án, thiết lập cấu trúc
+- V2: Tạo hệ thống đăng nhập/đăng ký
+- V3: Thêm tính năng admin quản lý người dùng
+- V4: Thêm tính năng xóa hàng loạt bài viết
+- V5: Thêm tính năng phân trang
 
-## Features
-
-- User registration and authentication
-- Create, read, update, and delete blog posts
-- Responsive design with CSS
-- Client-side interactivity with JavaScript
-
-## Contributing
-
-Feel free to submit issues or pull requests for improvements or bug fixes.
+## Link triển khai
+Ứng dụng đã được triển khai tại: https://github.com/LeNhatTruong0909/flask-tiny-app.git
