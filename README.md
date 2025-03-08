@@ -60,3 +60,25 @@ Flask Blog là một ứng dụng blog hoàn chỉnh được xây dựng bằng
 
 ## Link triển khai
 Ứng dụng đã được triển khai tại: https://github.com/LeNhatTruong0909/flask-tiny-app.git
+
+## Sử dụng Docker
+
+### Phương pháp 1: Sử dụng docker-setup.bat
+1. Chạy file docker-setup.bat
+
+### Phương pháp 2: Sử dụng lệnh Docker thủ công
+1. Xây dựng Docker image:
+   ```
+   docker-compose build
+   ```
+
+2. Khởi động container:
+   ```
+   docker-compose up -d
+   ```
+3. Truy cập ứng dụng tại `http://localhost:5000`
+
+4. Dừng container:
+   ```
+   docker-compose down
+   ```
