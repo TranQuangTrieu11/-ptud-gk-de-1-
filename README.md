@@ -15,6 +15,7 @@ Flask Blog là một ứng dụng blog hoàn chỉnh được xây dựng bằng
    - Đăng ký và đăng nhập tài khoản
    - Phân quyền Admin/User
    - Admin có thể khóa tài khoản và đặt lại mật khẩu của người dùng
+   - Người dùng có thể tự thay đổi mật khẩu của mình
 
 2. **Quản lý bài viết**
    - Tạo, đọc, cập nhật, xóa bài viết

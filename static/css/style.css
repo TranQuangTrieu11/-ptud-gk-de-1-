@@ -255,6 +255,7 @@ textarea.form-control {
 .post-content {
     line-height: 1.8;
     font-size: 1.1rem;
+    white-space: pre-line;
 }
 
 /* Comments */
@@ -438,4 +439,58 @@ nav ul li {
         padding: 6px 10px;
         font-size: 0.85rem;
     }
+}
+
+/* Thumbnail styles */
+.post-thumbnail {
+    margin: 0 0 15px 0;  /* Thay đổi margin để phù hợp với vị trí mới */
+    text-align: center;
+}
+
+.thumbnail-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Post image styles */
+.post-image {
+    margin: 0 0 20px 0;  /* Thay đổi margin để phù hợp với vị trí mới */
+    text-align: center;
+}
+
+.post-image img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* File input styling */
+.form-control-file {
+    padding: 8px 0;
+}
+
+/* Image preview */
+.image-preview-container {
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.current-image {
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.form-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #6c757d;
 }

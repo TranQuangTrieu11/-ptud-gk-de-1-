@@ -39,8 +39,16 @@
                     <div class="post-selector">
                         <input type="checkbox" name="post_ids" value="{{ post.id }}" class="post-checkbox">
                     </div>
+                    
+                    {% if post.image_file %}
+                    <div class="post-thumbnail">
+                        <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="Ảnh bìa" class="thumbnail-image">
+                    </div>
+                    {% endif %}
+                    
                     <h2 class="post-title">{{ post.title }}</h2>
                     <p class="post-date">Đăng ngày {{ post.date_posted.strftime('%d/%m/%Y') }}</p>
+                    
                     <p class="post-excerpt">{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
                     <div class="post-actions">
                         <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-sm">Xem</a>

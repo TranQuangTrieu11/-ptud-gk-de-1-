@@ -5,6 +5,12 @@
 {% block content %}
 <div class="container">
     <article class="post-detail">
+        {% if post.image_file %}
+        <div class="post-image">
+            <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="Ảnh bài viết" class="img-fluid">
+        </div>
+        {% endif %}
+        
         <h1>{{ post.title }}</h1>
         
         <div class="post-meta">

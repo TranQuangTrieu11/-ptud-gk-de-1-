@@ -16,7 +16,7 @@
         {% endif %}
     {% endwith %}
     
-    <form action="{{ url_for('edit_post', post_id=post.id) }}" method="POST" class="post-form">
+    <form action="{{ url_for('edit_post', post_id=post.id) }}" method="POST" class="post-form" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title">Tiêu đề</label>
             <input type="text" id="title" name="title" class="form-control" required value="{{ post.title }}">
@@ -25,10 +25,63 @@
             <label for="content">Nội dung</label>
             <textarea id="content" name="content" class="form-control" rows="10" required>{{ post.content }}</textarea>
         </div>
+        <div class="form-group">
+            <label for="image">Ảnh bìa (tùy chọn)</label>
+            <input type="file" id="image" name="image" class="form-control-file" accept="image/*">
+            <small class="form-text text-muted">Cho phép các định dạng: JPG, JPEG, PNG, GIF. Kích thước tối đa: 5MB.</small>
+        </div>
+        
+        {% if post.image_file %}
+        <div class="form-group">
+            <div class="current-image">
+                <h4>Ảnh hiện tại</h4>
+                <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="Ảnh bài viết" style="max-width: 300px; max-height: 200px;">
+                <div class="form-check mt-2">
+                    <input type="checkbox" class="form-check-input" id="remove_image" name="remove_image">
+                    <label class="form-check-label" for="remove_image">Xóa ảnh này</label>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="image-preview-container" style="display: none;">
+            <h4>Xem trước ảnh mới</h4>
+            <img id="image-preview" src="#" alt="Xem trước ảnh" style="max-width: 300px; max-height: 200px;">
+        </div>
+        
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Cập nhật</button>
             <a href="{{ url_for('my_posts') }}" class="btn btn-outline">Hủy</a>
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('image').addEventListener('change', function(event) {
+        const imagePreviewContainer = document.querySelector('.image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        
+        if (event.target.files.length > 0) {
+            const file = event.target.files[0];
+            
+            // Kiểm tra nếu là file ảnh
+            if (file.type.match('image.*')) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreviewContainer.style.display = 'block';
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                imagePreviewContainer.style.display = 'none';
+                alert('Vui lòng chọn file ảnh hợp lệ.');
+                event.target.value = '';
+            }
+        } else {
+            imagePreviewContainer.style.display = 'none';
+        }
+    });
+</script>
 {% endblock %}
