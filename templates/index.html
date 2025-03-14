@@ -6,65 +6,82 @@
 <div class="container">
     <section>
         <h2>Bài viết mới nhất</h2>
-        <ul class="posts-list">
-            {% for post in posts.items %}
-            <li class="post">
-                {% if post.image_file %}
-                <div class="post-thumbnail">
-                    <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="Ảnh bìa" class="thumbnail-image">
-                </div>
-                {% endif %}
-                
-                <h3><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h3>
-                <div class="post-meta">
-                    <span class="post-author">Tác giả: {{ post.author.username }}</span>
-                    <span class="post-date">Đăng ngày: {{ post.date_posted.strftime('%d/%m/%Y') }}</span>
-                </div>
-                
-                <div class="post-excerpt">
-                    <p>{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
-                </div>
-                <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-sm">Đọc tiếp</a>
-            </li>
-            {% else %}
-                <li class="no-posts">
-                    <p>Chưa có bài viết nào.</p>
-                </li>
-            {% endfor %}
-        </ul>
         
-        <!-- Phân trang -->
         {% if posts.total > 0 %}
-        <div class="pagination">
-            <div class="pagination-info">
-                Hiển thị {{ posts.items|length }} / {{ posts.total }} bài viết
-            </div>
-            <div class="pagination-links">
-                {% if posts.has_prev %}
-                    <a href="{{ url_for('index', page=posts.prev_num) }}" class="pagination-link">&laquo; Trước</a>
-                {% else %}
-                    <span class="pagination-link disabled">&laquo; Trước</span>
-                {% endif %}
-                
-                {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                    {% if page_num %}
-                        {% if page_num == posts.page %}
-                            <span class="pagination-link active">{{ page_num }}</span>
+            <div class="card-container">
+                {% for post in posts.items %}
+                <div class="card">
+                    <div class="card-img">
+                        {% if post.image_file %}
+                            <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="{{ post.title }}">
                         {% else %}
-                            <a href="{{ url_for('index', page=page_num) }}" class="pagination-link">{{ page_num }}</a>
+                            <div class="card-img-placeholder">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
                         {% endif %}
-                    {% else %}
-                        <span class="pagination-link dots">...</span>
-                    {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
+                        </h3>
+                        <div class="card-meta">
+                            <span><i class="fas fa-user"></i> {{ post.author.username }}</span>
+                            <span><i class="far fa-calendar-alt"></i> {{ post.date_posted.strftime('%d/%m/%Y') }}</span>
+                        </div>
+                        <div class="card-text">
+                            {{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}
+                        </div>
+                        <div class="card-actions">
+                            <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-primary">
+                                <i class="fas fa-book-open"></i> Xem thêm
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="far fa-comment"></i> {{ post.comments|length }}</span>
+                            <span><i class="far fa-eye"></i> {{ post.followers|length }}</span>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-                
-                {% if posts.has_next %}
-                    <a href="{{ url_for('index', page=posts.next_num) }}" class="pagination-link">Sau &raquo;</a>
-                {% else %}
-                    <span class="pagination-link disabled">Sau &raquo;</span>
-                {% endif %}
             </div>
-        </div>
+            
+            <!-- Phân trang -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    Hiển thị {{ posts.items|length }} / {{ posts.total }} bài viết
+                </div>
+                <div class="pagination-links">
+                    {% if posts.has_prev %}
+                        <a href="{{ url_for('index', page=posts.prev_num) }}" class="pagination-link">&laquo; Trước</a>
+                    {% else %}
+                        <span class="pagination-link disabled">&laquo; Trước</span>
+                    {% endif %}
+                    
+                    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                            {% if page_num == posts.page %}
+                                <span class="pagination-link active">{{ page_num }}</span>
+                            {% else %}
+                                <a href="{{ url_for('index', page=page_num) }}" class="pagination-link">{{ page_num }}</a>
+                            {% endif %}
+                        {% else %}
+                            <span class="pagination-link dots">...</span>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if posts.has_next %}
+                        <a href="{{ url_for('index', page=posts.next_num) }}" class="pagination-link">Sau &raquo;</a>
+                    {% else %}
+                        <span class="pagination-link disabled">Sau &raquo;</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="no-posts">
+                <p>Chưa có bài viết nào.</p>
+            </div>
         {% endif %}
     </section>
 </div>

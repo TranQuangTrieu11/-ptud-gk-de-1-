@@ -16,19 +16,44 @@
         <div class="post-meta">
             <span class="post-author">Tác giả: {{ post.author.username }}</span>
             <span class="post-date">Đăng ngày: {{ post.date_posted.strftime('%d/%m/%Y') }}</span>
+            <span class="post-followers">
+                <i class="fas fa-users"></i> Người theo dõi: 
+                <span class="follower-count">{{ post.followers|length }}</span>
+            </span>
         </div>
         
         <div class="post-content">
             {{ post.content|safe }}
         </div>
         
-        {% if current_user.is_authenticated and (current_user.id == post.user_id or current_user.is_admin) %}
         <div class="post-actions">
-            <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-warning">Sửa bài viết</a>
-            <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-danger" 
-               onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">Xóa bài viết</a>
+            {% if current_user.is_authenticated %}
+                {% if current_user.id != post.user_id %}
+                    {% set is_following = false %}
+                    {% for follow in post.followers %}
+                        {% if follow.user_id == current_user.id %}
+                            {% set is_following = true %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if is_following %}
+                        <a href="{{ url_for('unfollow_post', post_id=post.id) }}" class="btn btn-secondary">
+                            <i class="fas fa-bell-slash"></i> Bỏ theo dõi
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('follow_post', post_id=post.id) }}" class="btn btn-primary">
+                            <i class="fas fa-bell"></i> Theo dõi
+                        </a>
+                    {% endif %}
+                {% endif %}
+                
+                {% if current_user.id == post.user_id or current_user.is_admin %}
+                    <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-warning">Sửa bài viết</a>
+                    <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-danger" 
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">Xóa bài viết</a>
+                {% endif %}
+            {% endif %}
         </div>
-        {% endif %}
     </article>
     
     <div class="comments">

@@ -11,11 +11,23 @@
 <body>
     <header>
         <h1>Welcome to My Blog</h1>
+        
+        <!-- Hiển thị thông tin người dùng đăng nhập -->
+        {% if current_user.is_authenticated %}
+        <div class="user-info">
+            <span class="welcome-text">Xin chào, <strong>{{ current_user.username }}</strong></span>
+            {% if current_user.is_admin %}
+            <span class="badge admin">Admin</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        
         <nav>
             <ul>
                 <li><a href="{{ url_for('index') }}">Trang chủ</a></li>
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('my_posts') }}">Bài viết của tôi</a></li>
+                    <li><a href="{{ url_for('followed_posts') }}">Bài viết đã theo dõi</a></li>
                     <li><a href="{{ url_for('change_password') }}">Đổi mật khẩu</a></li>
                     {% if current_user.is_admin %}
                         <li><a href="{{ url_for('admin_dashboard') }}">Quản trị</a></li>

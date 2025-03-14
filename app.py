@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User, Post
+from models import db, User, Post, Comment, PostFollow
 from config import Config
 import secrets
 import os
 import uuid
 from werkzeug.utils import secure_filename
+from sqlalchemy import and_
 
 # Tạo thư mục instance nếu chưa tồn tại
 instance_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance')
@@ -479,17 +480,78 @@ def change_password():
     
     return render_template('change_password.html')
 
+# Thêm route để theo dõi bài viết
+@app.route('/post/<int:post_id>/follow')
+@login_required
+def follow_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    
+    # Kiểm tra người dùng không tự follow bài của mình
+    if post.user_id == current_user.id:
+        flash('Bạn không thể theo dõi bài viết của chính mình.', 'warning')
+        return redirect(url_for('post', post_id=post_id))
+    
+    # Kiểm tra xem người dùng đã theo dõi bài viết này chưa
+    existing_follow = PostFollow.query.filter(
+        and_(
+            PostFollow.user_id == current_user.id,
+            PostFollow.post_id == post_id
+        )
+    ).first()
+    
+    if existing_follow:
+        flash('Bạn đã theo dõi bài viết này rồi.', 'info')
+    else:
+        # Tạo đối tượng theo dõi mới
+        follow = PostFollow(user_id=current_user.id, post_id=post_id)
+        db.session.add(follow)
+        db.session.commit()
+        flash('Bạn đã theo dõi bài viết thành công!', 'success')
+    
+    return redirect(url_for('post', post_id=post_id))
+
+# Thêm route để bỏ theo dõi bài viết
+@app.route('/post/<int:post_id>/unfollow')
+@login_required
+def unfollow_post(post_id):
+    # Tìm và xóa đối tượng theo dõi
+    follow = PostFollow.query.filter_by(
+        user_id=current_user.id,
+        post_id=post_id
+    ).first()
+    
+    if follow:
+        db.session.delete(follow)
+        db.session.commit()
+        flash('Bạn đã bỏ theo dõi bài viết thành công!', 'success')
+    else:
+        flash('Bạn chưa theo dõi bài viết này.', 'info')
+    
+    return redirect(url_for('post', post_id=post_id))
+
+# Thêm route để xem danh sách bài viết đã theo dõi
+@app.route('/followed-posts', defaults={'page': 1})
+@app.route('/followed-posts/page/<int:page>')
+@login_required
+def followed_posts(page):
+    per_page = 5
+    
+    # Lấy danh sách ID bài viết mà người dùng đã theo dõi
+    followed_post_ids = db.session.query(PostFollow.post_id).filter_by(user_id=current_user.id).all()
+    followed_post_ids = [post_id[0] for post_id in followed_post_ids]
+    
+    # Lấy thông tin chi tiết các bài viết đã theo dõi
+    posts = Post.query.filter(Post.id.in_(followed_post_ids)).order_by(Post.date_posted.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+    
+    return render_template('followed_posts.html', posts=posts)
+
 if __name__ == '__main__':
     with app.app_context():
         # Import models để migration database
-        from models import User, Post, Comment
+        from models import User, Post, Comment, PostFollow
         db.create_all()
-        
-        # Kiểm tra và thêm cột image_file nếu chưa tồn tại
-        inspector = db.inspect(db.engine)
-        if 'image_file' not in [c['name'] for c in inspector.get_columns('post')]:
-            # Tạo migration để thêm cột
-            db.engine.execute('ALTER TABLE post ADD COLUMN image_file VARCHAR(100)')
         
         # Tạo tài khoản admin mặc định nếu chưa có
         admin = User.query.filter_by(username='admin').first()

@@ -33,28 +33,46 @@
                 </button>
             </div>
             
-            <div class="posts-grid">
+            <div class="card-container">
                 {% for post in posts.items %}
-                <div class="post-card">
+                <div class="card">
                     <div class="post-selector">
                         <input type="checkbox" name="post_ids" value="{{ post.id }}" class="post-checkbox">
                     </div>
                     
-                    {% if post.image_file %}
-                    <div class="post-thumbnail">
-                        <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="Ảnh bìa" class="thumbnail-image">
+                    <div class="card-img">
+                        {% if post.image_file %}
+                            <img src="{{ url_for('static', filename='uploads/' + post.image_file) }}" alt="{{ post.title }}">
+                        {% else %}
+                            <div class="card-img-placeholder">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                     
-                    <h2 class="post-title">{{ post.title }}</h2>
-                    <p class="post-date">Đăng ngày {{ post.date_posted.strftime('%d/%m/%Y') }}</p>
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            <a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
+                        </h3>
+                        <div class="card-meta">
+                            <span><i class="far fa-calendar-alt"></i> {{ post.date_posted.strftime('%d/%m/%Y') }}</span>
+                        </div>
+                        <div class="card-text">
+                            {{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}
+                        </div>
+                        <div class="card-actions">
+                            <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-sm">Xem</a>
+                            <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                            <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-sm btn-danger" 
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">Xóa</a>
+                        </div>
+                    </div>
                     
-                    <p class="post-excerpt">{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
-                    <div class="post-actions">
-                        <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-sm">Xem</a>
-                        <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-sm btn-warning">Sửa</a>
-                        <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-sm btn-danger" 
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">Xóa</a>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="far fa-comment"></i> {{ post.comments|length }}</span>
+                            <span><i class="far fa-eye"></i> {{ post.followers|length }}</span>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -113,13 +131,13 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedCountEl.textContent = checkedCount;
         bulkDeleteBtn.disabled = checkedCount === 0;
         
-        // Thêm/xóa class cho post-card khi được chọn
+        // Thêm/xóa class cho card khi được chọn
         postCheckboxes.forEach(checkbox => {
-            const postCard = checkbox.closest('.post-card');
+            const card = checkbox.closest('.card');
             if (checkbox.checked) {
-                postCard.classList.add('selected');
+                card.classList.add('selected');
             } else {
-                postCard.classList.remove('selected');
+                card.classList.remove('selected');
             }
         });
     }
