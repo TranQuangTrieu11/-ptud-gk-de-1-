@@ -8,6 +8,10 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 
+# Tạo thư mục instance nếu chưa tồn tại
+instance_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance')
+os.makedirs(instance_path, exist_ok=True)
+
 # Thêm cấu hình cho upload ảnh
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
