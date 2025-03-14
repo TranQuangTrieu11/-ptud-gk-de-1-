@@ -37,7 +37,7 @@ Flask Blog là một ứng dụng blog hoàn chỉnh được xây dựng bằng
 1. Clone the repository:
    ```
    git clone https://github.com/TranQuangTrieu11/-ptud-gk-de-1.git
-   cd flask-tiny-app
+   cd ptud-gk-de-1
    ```
 2. Install the required dependencies:
    ```
