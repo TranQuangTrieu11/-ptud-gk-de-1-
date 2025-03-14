@@ -1,20 +1,65 @@
-{% extends "base.html" %}
-
-{% block title %}Tài khoản bị khóa{% endblock %}
-
-{% block content %}
-<div class="container">
-    <div class="blocked-message">
-        <div class="blocked-icon">
-            <i class="fa fa-lock"></i>
-        </div>
-        <h1>Tài khoản của bạn đã bị khóa</h1>
-        <p>Tài khoản của bạn đã bị quản trị viên khóa và không thể truy cập vào hệ thống.</p>
-        <p>Vui lòng liên hệ với quản trị viên để biết thêm thông tin và yêu cầu mở khóa tài khoản.</p>
-        <div class="action-links">
-            <a href="{{ url_for('index') }}" class="btn btn-primary">Quay lại trang chủ</a>
-            <a href="mailto:admin@example.com" class="btn btn-outline">Liên hệ Admin</a>
-        </div>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tài khoản bị khóa - Flask Blog</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    .blocked-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: #dc3545;
+      text-align: center;
+    }
+    .blocked-message {
+      text-align: center;
+      color: #721c24;
+      margin-bottom: 20px;
+    }
+    .action-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn {
+      background: linear-gradient(135deg, #71b7e6, #9b59b6);
+      padding: 10px;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      background: linear-gradient(-135deg, #71b7e6, #9b59b6);
+    }
+    .btn-outline {
+      background: white;
+      border: 1px solid #9b59b6;
+      color: #9b59b6;
+    }
+    .btn-outline:hover {
+      background: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="blocked-icon">
+      <i class="fas fa-lock"></i>
     </div>
-</div>
-{% endblock %}
+    <h2>Tài khoản bị khóa</h2>
+    <div class="blocked-message">
+      <p>Tài khoản của bạn đã bị quản trị viên khóa và không thể truy cập vào hệ thống.</p>
+      <p>Vui lòng liên hệ với quản trị viên để biết thêm thông tin.</p>
+    </div>
+    <div class="action-links">
+      <a href="{{ url_for('index') }}" class="btn">Quay lại trang chủ</a>
+      <a href="mailto:admin@example.com" class="btn btn-outline">Liên hệ Admin</a>
+    </div>
+  </div>
+</body>
+</html>

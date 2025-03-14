@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins',sans-serif;
+}
+body{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+.wrapper{
+  max-width: 420px;
+  width: 100%;
+  background: #fff;
+  padding: 30px;
+  border-radius: 6px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+.wrapper h2{
+  position: relative;
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 25px;
+}
+.wrapper h2::before{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  height: 3px;
+  width: 100%;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+.wrapper form .input-box{
+  margin-bottom: 15px;
+}
+.wrapper form .input-box input{
+  height: 45px;
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  border-radius: 5px;
+  padding-left: 15px;
+  border: 1px solid #ccc;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+.wrapper form .input-box input:focus,
+.wrapper form .input-box input:valid{
+  border-color: #9b59b6;
+}
+.wrapper form .policy{
+  display: flex;
+  align-items: center;
+}
+.wrapper form .policy input{
+  margin-right: 8px;
+}
+.wrapper form .policy h3{
+  color: #707070;
+  font-size: 14px;
+  font-weight: 400;
+}
+.wrapper form .input-box.button{
+  margin-top: 20px;
+}
+.wrapper form .input-box.button input{
+  color: #fff;
+  letter-spacing: 1px;
+  border: none;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+  cursor: pointer;
+  font-weight: 500;
+}
+.wrapper form .input-box.button input:hover{
+  background: linear-gradient(-135deg, #71b7e6, #9b59b6);
+}
+.wrapper form .text{
+  margin-top: 20px;
+  text-align: center;
+}
+.wrapper form .text h3{
+  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+}
+.wrapper form .text h3 a{
+  color: #4070f4;
+  text-decoration: none;
+}
+.wrapper form .text h3 a:hover{
+  text-decoration: underline;
+}
+
+/* Alert messages */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.alert-success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+.alert-danger {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
