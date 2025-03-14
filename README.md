@@ -66,7 +66,7 @@ Flask Blog là một ứng dụng blog hoàn chỉnh được xây dựng bằng
 - V7: Cải tiến giao diện với thiết kế Card-Based
 
 ## Link triển khai
-Ứng dụng đã được triển khai tại: https://github.com/LeNhatTruong0909/flask-tiny-app.git
+Ứng dụng đã được triển khai tại: https://github.com/TranQuangTrieu11/-ptud-gk-de-1.git
 
 ## Sử dụng Docker
 
